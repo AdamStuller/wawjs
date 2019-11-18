@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --color test/creating-objects.spec.js"
+    "test": "mocha --color test/creating-objects.spec.js",
+    "testIntro": "mocha --color test/introspect.spec.js"
   },
   "author": "",
   "license": "ISC",

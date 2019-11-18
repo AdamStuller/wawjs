@@ -213,7 +213,7 @@ describe("cvicenie04 - Object properties concepts", function() {
       var props2 = [];
       forIn(y, (p) => props2.push(p));
 
-      assert.deepStrictEqual(props2, ['a', 'b'],
+      assert.deepStrictEqual(props2, ['b', 'a'],
         "but visible using forIn");
     });
   });
@@ -262,12 +262,11 @@ describe("cvicenie04 - Object properties concepts", function() {
       let x = Object.create(null, { a: { value: 10, enumerable: true } });
       let y = Object.create(x, { b: { value: 20, enumerable: false } });
       let sx = Symbol();
-      let sy
+      let sy = Symbol()
       x[sx] = "symbol sx";
       y[sy] = "symbol sy";
 
       var y2 = shallowClone(y);
-      
       assert(y2[sx] === "symbol sx");
       assert(y2[sy] === "symbol sy");
     });

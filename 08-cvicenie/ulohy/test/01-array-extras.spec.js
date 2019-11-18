@@ -17,7 +17,7 @@ describe("FP - array functions", function() {
   it("02-students without git repo", () => {
     // pozrite si strukturu objektov v poli a implementujte
     // zoznam studentov ktorym chyba git repo
-    let missingGit = []; //TODO: implement
+    let missingGit = students.filter(({git}) => git == null ); //TODO: implement
 
 
     //debug(JSON.stringify(missingGit, null, 2));
@@ -27,7 +27,15 @@ describe("FP - array functions", function() {
     )
   });
 
-  function fixProjects(student) { return { ...student } }
+  function fixProjects(student) { 
+    return {
+      ...student, 
+      'projects': student.projects == null ? [] : student.projects
+        .split(',')
+        .map( e => e.trim() )
+        .filter(Boolean)
+    }
+  }
 
   it("03-students with better project structure", () => {
     // TODO: student.project is string delimited by ","
@@ -49,7 +57,7 @@ describe("FP - array functions", function() {
     // z menej ako 3ma projektami
     let students4 = students
       .map(fixProjects)
-    // TODO:
+      .filter(({projects}) => projects.length < 3 )
 
     //debug(JSON.stringify(students4, null, 2));
     assert.deepStrictEqual(
@@ -64,7 +72,9 @@ describe("FP - array functions", function() {
       // vrati original properties studenta
       ...student,
       // a dopocitanu novu property points
-      points: [] //TODO: implement
+      points: Object.entries(student)
+        .filter( ([key, _]) => key.match(/points[0-9]+/g) )
+        .map(([_, value]) => value) //TODO: implement
     }
   }
 
@@ -87,7 +97,10 @@ describe("FP - array functions", function() {
 
   
   function totalPoints(student) {
-    // TODO: implementujte
+    return {
+      ...student,
+      totalPoints: student.points.reduce((acc, curr) => acc + curr)
+    }
   }
 
   it("06-total points of each student", () => {
@@ -108,23 +121,26 @@ describe("FP - array functions", function() {
   it("07-sum of points of all students", () => {
     // ak uz mate sumu za kazdeho jedneho, mali by ste vediet zrata
     // za vsetkych 
-    let sumOfAll = students
+    const sumOfAll = students
       .map(fixPoints)
       .map(totalPoints)
-      //.????()
+      .reduce( (acc, {totalPoints} ) => acc + totalPoints, 0)
 
-    debug(sumOfAll);
+    debug(students[0]);
     assert(sumOfAll === 924);
   });
 
   it("08-unique list of projects", () => {
     // z celeho excelu chceme uniq zoznam projektov
-    let uniqueProjects = students
+    let uniqueProjectsSet = 
+    new Set(
+      students
       .map(fixProjects)
-      .reduce((uniqueProjects, student, i, students) => {
-        student.projects.forEach(uniqueProjects.add, uniqueProjects);
-        return i !== students.length - 1 ? uniqueProjects : [...uniqueProjects];
-      }, new Set())
+      .reduce((arr, {projects}) => arr.concat(projects), [])
+    )
+
+    debug(uniqueProjectsSet)
+    const uniqueProjects = Array.from(uniqueProjectsSet)
 
     assert.deepStrictEqual(
       uniqueProjects,
@@ -140,13 +156,16 @@ describe("FP - array functions", function() {
     let groupedByProject = students
       .map(fixProjects)
       .reduce((uniqueProjects, student) => {
-        // TODO: 
-
+        student.projects.forEach(project => {
+          let vals =  uniqueProjects.get(project);
+          vals && vals.push(student) || uniqueProjects.set(project, [student])
+        })
+        return uniqueProjects
       }, new Map())
     // convert map entries to array
     groupedByProject = [...groupedByProject];
     
-    //debug(JSON.stringify(groupedByProject, null, 2));
+    // debug(JSON.stringify(groupedByProject, null, 2));
     assert.deepStrictEqual(
       groupedByProject,
       require("./data/group-by-project.json")
@@ -158,12 +177,28 @@ describe("FP - array functions", function() {
     // chceme ku kazdemu projektu zoznam studentov
     // skuste to nejako kodnut tak
     // aby vysledok vysiel podla duplicate-projects.json
-    let duplicateProjects = students
+    const groupedProjectsMap = 
+      students
       .map(fixProjects)
-      //. TODO:
-      //.
-      //.
-      //
+      .reduce((uniqueProjects, student) => {
+        student.projects.filter(project => project !== '').forEach(project => {
+          let vals =  uniqueProjects.get(project);
+          vals && vals.push(student) || uniqueProjects.set(project, [student])
+        })
+        return uniqueProjects
+      }, new Map())
+
+    let duplicateProjects = [ ...groupedProjectsMap ]
+      .map(([name, students]) => {
+        return {
+          "project": name,
+          "students": students.map(s => s['#'])
+        }
+      })
+      .filter(({students}) => students.length > 1)
+
+
+
     debug(JSON.stringify(duplicateProjects, null, 2));
     assert.deepStrictEqual(
       duplicateProjects,
