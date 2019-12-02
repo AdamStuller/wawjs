@@ -7,7 +7,7 @@ describe("test ls-promises.js", function() {
 
   const expected = ['ls-async.js', 'ls-promises.js', 'ls-async.spec.js', 'ls-pomises.spec.js', 'same-output.spec.js'];
 
-  it("", function() {
+  it("01", function() {
 
     return lsr(".")
       .then((files) => {
