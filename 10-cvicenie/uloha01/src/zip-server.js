@@ -7,7 +7,7 @@ const { createGzip} = require('zlib')
 
 
 
-const storageDir = path.join(__dirname, 'serves r-data')  
+const storageDir = path.join(path.dirname(process.argv[1]), 'server-data')  
 
 const server = http.createServer()
 server.listen(9999, "localhost")
