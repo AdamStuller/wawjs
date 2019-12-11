@@ -1,5 +1,5 @@
 {
-  "name": "uloha02",
+  "name": "uloha01",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,13 +7,16 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test/bom/"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "zlib": "^1.0.5"
+  },
   "devDependencies": {
     "mocha": "^6.2.2"
-  },
-  "dependencies": {}
+  }
 }
