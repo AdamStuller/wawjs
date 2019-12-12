@@ -20,14 +20,7 @@ describe("bom.js tests", function() {
         // TODO: naive, do not assert all chunk is received
         .once("data", (chunk) => {
 
-          assert(Buffer.isBuffer(chunk));
-          // const first_expected = Buffer.from([
-          //   0xef, 0xbb, 0xbf, // utf8 bom
-          //   0x2f, 0x2f, 0x20, 0x77, 0x69, 0x74, 0x68
-          // ])
-          console.log(chunk)
-          // ef bb bf 2f 2f 20 77 69 74 68
-          //          /  /     w  i  t  h 
+          assert(Buffer.isBuffer(chunk)); 
           const expected = Buffer.from([
             // no bom
             0x2f, 0x2f, 0x20, 0x77, 0x69, 0x74, 0x68
